@@ -322,19 +322,6 @@ export default function Meds() {
             />
           </div>
 
-          <div className={styles.field}>
-            <label htmlFor={`${uid}-by`} className={styles.label}>
-              Prescribed by <span className={styles.optional}>optional</span>
-            </label>
-            <input
-              id={`${uid}-by`}
-              className={styles.input}
-              value={draft.prescribedBy}
-              onChange={(e) => update("prescribedBy", e.target.value)}
-              placeholder="e.g. Dr Patel (GP)"
-            />
-          </div>
-
           <div className={styles.sheetActions}>
             <button type="submit" className={styles.primaryBtn}>
               Save
@@ -375,17 +362,11 @@ export default function Meds() {
                       </span>
                       <span className={styles.rowMeta}>{summary(m)}</span>
                     </span>
-                    <span className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`} aria-hidden="true" />
+                    {!m.demo && <span className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`} aria-hidden="true" />}
                   </button>
 
-                  {open && (
+                  {open && !m.demo && (
                     <div id={detailsId} className={styles.details}>
-                      <dl className={styles.detailList}>
-                        <div className={styles.detail}>
-                          <dt>Prescribed by</dt>
-                          <dd>{m.prescribedBy || "Not recorded"}</dd>
-                        </div>
-                      </dl>
                       {!m.demo &&
                         (confirmId === m.id ? (
                           <div className={styles.confirm} role="group" aria-label={`Remove ${m.name}?`}>

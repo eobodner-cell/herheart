@@ -172,6 +172,14 @@ export function healthyNormal() {
 export function insight(e: Evaluation) {
   const n = healthyNormal();
   const m = e.metrics;
+  // First weeks on medication: say it has started to work, honestly.
+  if (e.onMed && e.day - medication.startDay < 21) {
+    const pre = range(medication.startDay - 7, medication.startDay - 1);
+    const preSys = Math.round(mean(pre, "sys"));
+    const preDia = Math.round(mean(pre, "dia"));
+    if (m.sys < preSys)
+      return `Your blood pressure has started to come down since you began ${medication.name}: ${m.sys}/${m.dia} this week, from ${preSys}/${preDia} the week before.`;
+  }
   if (e.onMed && m.sys < 135 && m.dia < 85)
     return `Your blood pressure has come down to ${m.sys}/${m.dia} since you started ${medication.name}, close to your normal of ${n.sys}/${n.dia}.`;
   if (m.rhr - n.rhr >= 5) return `Your resting heart rate is ${m.rhr - n.rhr} beats above your normal this week. Take it gently.`;

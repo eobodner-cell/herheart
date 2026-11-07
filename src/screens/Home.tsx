@@ -121,7 +121,7 @@ export default function Home({
         <p className={s.insight}>{insight(e)}</p>
       </section>
 
-      <section>
+      <section id="trends">
         <h2 className={s.label}>Vs your normal</h2>
         <ul className={s.list}>
           {METRICS.map((x) => {

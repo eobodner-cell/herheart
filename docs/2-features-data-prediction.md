@@ -17,7 +17,7 @@ This reflects the team's feature decisions: 8 front-end features kept, everythin
 | Female-specific risk profile, plus GP-record values | ✅ | `src/screens/Home.tsx` |
 | Heart score ring with trajectory | ✅ | `Home.tsx` |
 | Trends vs her normal: resting HR, HRV, home BP, sleep; 8-week chart with "started ramipril" marker | ✅ | `Home.tsx` |
-| Add a medication: suggestions, dose, times a day, start date, prescriber, demo photo-of-the-box | ✅ | `src/screens/Meds.tsx` |
+| Add a medication: suggestions, dose, times a day, start date, demo photo-of-the-box | ✅ | `src/screens/Meds.tsx` |
 | Talk to HerHeart: animated heart that glows with voice, transcript, type-a-question | ✅ (live voice: test in Chrome) | `src/screens/Talk.tsx`, `src/components/HeartAvatar.tsx` |
 | Community: 6 groups, pinned guidelines, posts, replies, "This helped", report, new post | ✅ (demo posts) | `src/screens/Community.tsx` |
 | Team challenges & badges: active team challenge, streak, 30-day grid, badges, fair leaderboard, join more | ✅ (demo data) | `src/screens/Challenges.tsx` |

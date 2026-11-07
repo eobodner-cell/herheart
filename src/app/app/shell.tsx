@@ -7,6 +7,7 @@ import type { AvatarState } from "@/components/HeartAvatar";
 import { clinical, femaleHistory, LAST_DAY, profile } from "@/lib/patient";
 import { agentContext, evaluate, historyContext } from "@/lib/rules";
 import { readStored, useMeds } from "@/lib/store";
+import { DEMO, DEMO_DAY, DEMO_VOICES, PAUSE_MS, captionText, type DemoLine } from "@/lib/demo";
 import Home, { type Metric } from "@/screens/Home";
 import Talk, { type Msg } from "@/screens/Talk";
 import Meds from "@/screens/Meds";
@@ -16,7 +17,6 @@ import Connect from "@/screens/Connect";
 import s from "./shell.module.css";
 
 type Tab = "home" | "talk" | "meds" | "community" | "challenges";
-const DAY = LAST_DAY; // the demo's "today"
 
 const icon = (d: ReactNode) => (
   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -40,6 +40,10 @@ function countConnected(v: unknown): number {
 
 export default function Shell() {
   const [tab, setTab] = useState<Tab>("home");
+  const [day, setDay] = useState(LAST_DAY); // the app's "today"; the demo moves it
+  const [demoLine, setDemoLine] = useState<DemoLine | null>(null);
+  const demoRun = useRef(0);
+  const demoAudio = useRef<HTMLAudioElement | null>(null);
   const [connectOpen, setConnectOpen] = useState(false);
   const [metric, setMetric] = useState<Metric>("bp");
   const [log, setLog] = useState<Msg[]>([]);
@@ -95,8 +99,8 @@ export default function Shell() {
         dynamicVariables: {
           user_name: profile.name,
           user_profile: `${profile.name}, ${profile.age}. Female-specific history: ${femaleHistory.map((h) => `${h.item}: ${h.value}`).join("; ")}. ${clinical.familyHistory}. GP record: total cholesterol ${clinical.totalChol}, HDL ${clinical.hdl} mmol/L, HbA1c ${clinical.hba1c} mmol/mol, BMI ${clinical.bmi}, eGFR ${clinical.egfr}, smoking ${clinical.smoking}, diabetes ${clinical.diabetes}. Medications: ${medsText()}.`,
-          today_context: agentContext(evaluate(DAY)),
-          health_history: historyContext(DAY),
+          today_context: agentContext(evaluate(day)),
+          health_history: historyContext(day),
         },
       });
     } catch (err) {
@@ -104,8 +108,68 @@ export default function Shell() {
     }
   }
 
-  const avatarState: AvatarState = voice.isSpeaking ? "speaking" : live ? "listening" : voice.status === "connecting" ? "connecting" : "idle";
+  // 1-minute scripted demo: plays pre-rendered voices and moves between screens.
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  function stopDemo() {
+    demoRun.current++;
+    demoAudio.current?.pause();
+    demoAudio.current = null;
+    setDemoLine(null);
+    setDay(LAST_DAY);
+  }
+  async function playDemo() {
+    if (live) voice.endSession();
+    const run = ++demoRun.current;
+    const alive = () => demoRun.current === run;
+    setDay(DEMO_DAY);
+    setConnectOpen(false);
+    for (const line of DEMO) {
+      if (!alive()) return;
+      if (line.scene === "connect") {
+        setTab("home");
+        setConnectOpen(true);
+      } else if (line.scene === "home-bp") {
+        setConnectOpen(false);
+        setMetric("bp");
+        setTab("home");
+        // Bring the blood-pressure chart into view above the caption.
+        setTimeout(() => document.getElementById("trends")?.scrollIntoView({ behavior: "smooth", block: "start" }), 450);
+      } else {
+        setConnectOpen(false);
+        setTab(line.scene);
+      }
+      setDemoLine(line);
+      const a = new Audio(`/demo/${line.id}.mp3`);
+      a.playbackRate = DEMO_VOICES[line.who].rate;
+      demoAudio.current = a;
+      await new Promise<void>((resolve) => {
+        a.onended = () => resolve();
+        a.onerror = () => resolve();
+        a.play().catch(() => resolve());
+      });
+      await sleep(PAUSE_MS);
+    }
+    if (!alive()) return;
+    await sleep(1200);
+    if (alive()) stopDemo();
+  }
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement)?.tagName === "INPUT" || (e.target as HTMLElement)?.tagName === "TEXTAREA") return;
+      if (e.key.toLowerCase() === "d") (demoLine ? stopDemo() : playDemo());
+      if (e.key === "Escape" && demoLine) stopDemo();
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  });
+
+  const avatarState: AvatarState = demoLine
+    ? demoLine.who === "hera"
+      ? "speaking"
+      : "listening"
+    : voice.isSpeaking ? "speaking" : live ? "listening" : voice.status === "connecting" ? "connecting" : "idle";
   const level = () => {
+    if (demoAudio.current && !demoAudio.current.paused) return 0.3 + 0.35 * Math.abs(Math.sin(performance.now() / 120));
     if (voice.status !== "connected") return 0;
     try {
       return voice.isSpeaking ? voice.getOutputVolume() * 1.6 : voice.getInputVolume() * 2.2;
@@ -117,10 +181,16 @@ export default function Shell() {
   return (
     <main className={s.stage}>
       <div className={s.phone}>
-        <div className={s.status} aria-hidden>
+        <div className={s.status}>
           <span>9:41</span>
           <span className={s.island} />
-          <span className={live ? s.liveDot : ""}>{live ? "● Voice on" : ""}</span>
+          {live ? (
+            <span className={s.liveDot}>● Voice on</span>
+          ) : (
+            <button type="button" className={s.demoBtn} onClick={() => (demoLine ? stopDemo() : playDemo())} aria-hidden={false}>
+              {demoLine ? "■ Stop" : "▶ Demo"}
+            </button>
+          )}
         </div>
 
         <div className={s.screen} ref={screen} data-screen>
@@ -128,7 +198,7 @@ export default function Shell() {
             (connectOpen ? (
               <Connect onBack={() => setConnectOpen(false)} />
             ) : (
-              <Home day={DAY} metric={metric} onMetric={setMetric} onConnect={() => setConnectOpen(true)} connectedCount={countConnected(connections)} />
+              <Home day={day} metric={metric} onMetric={setMetric} onConnect={() => setConnectOpen(true)} connectedCount={countConnected(connections)} />
             ))}
           {tab === "talk" && (
             <Talk
@@ -148,6 +218,13 @@ export default function Shell() {
           {tab === "community" && <Community />}
           {tab === "challenges" && <Challenges />}
         </div>
+
+        {demoLine && (
+          <div className={`${s.caption} ${demoLine.who === "hera" ? s.capHera : s.capYou}`} role="status" aria-live="polite">
+            <span className={s.capWho}>{demoLine.who === "hera" ? "HerHeart" : profile.name}</span>
+            <p>{captionText(demoLine.text)}</p>
+          </div>
+        )}
 
         <nav className={s.nav} aria-label="HerHeart">
           {TABS.map((t) => (

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1 --port 3100",
     "typecheck": "tsc --noEmit",
-    "setup:agent": "tsx --env-file=.env.local scripts/setup-agent.ts"
+    "setup:agent": "tsx --env-file=.env.local scripts/setup-agent.ts",
+    "demo:audio": "tsx --env-file=.env.local scripts/render-demo.ts"
   },
   "dependencies": {
     "@elevenlabs/react": "1.16.0",

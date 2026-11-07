@@ -46,7 +46,7 @@ export const DEFAULT_MEDS: Medication[] = [
     timesPerDay: 1,
     times: ["08:00"],
     startDate: "2026-09-11",
-    prescribedBy: "Dr Patel (GP)",
+    prescribedBy: "",
     demo: true,
   },
 ];
