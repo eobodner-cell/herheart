@@ -1,10 +1,12 @@
 "use client";
 // Talk: the heart avatar. Tap it to start or end voice mode.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeartAvatar, { type AvatarState } from "@/components/HeartAvatar";
+import ChatCard from "@/components/ChatCards";
+import type { DemoCard } from "@/lib/demo";
 import s from "./Talk.module.css";
 
-export type Msg = { who: "hera" | "you"; text: string };
+export type Msg = { who: "hera" | "you"; text: string; card?: DemoCard };
 const IDEAS = [
   "How was my sleep in August?",
   "Has my blood pressure come down since I started ramipril?",
@@ -30,6 +32,11 @@ export default function Talk({
   error: string;
 }) {
   const [text, setText] = useState("");
+  // Keep the newest message in view.
+  useEffect(() => {
+    const el = document.querySelector("[data-screen]");
+    if (el && log.length) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [log.length]);
   const label =
     state === "speaking"
       ? "HerHeart is speaking"
@@ -39,7 +46,7 @@ export default function Talk({
           ? "Connecting…"
           : "Tap the heart to talk";
   return (
-    <div className={s.talk}>
+    <div className={`${s.talk} ${log.length ? s.chatting : ""}`}>
       <div className={s.stage}>
         <HeartAvatar state={state} level={level} onPress={onPress} label={label} />
         {error && <p className={s.error}>{error}</p>}
@@ -60,6 +67,7 @@ export default function Talk({
           {log.map((m, i) => (
             <li key={i} className={m.who === "you" ? s.you : s.hera}>
               {m.text}
+              {m.card && <ChatCard card={m.card} />}
             </li>
           ))}
         </ol>

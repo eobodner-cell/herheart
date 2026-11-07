@@ -42,6 +42,7 @@ export default function Shell() {
   const [tab, setTab] = useState<Tab>("home");
   const [day, setDay] = useState(LAST_DAY); // the app's "today"; the demo moves it
   const [demoLine, setDemoLine] = useState<DemoLine | null>(null);
+  const [demoOn, setDemoOn] = useState(false);
   const demoRun = useRef(0);
   const demoAudio = useRef<HTMLAudioElement | null>(null);
   const [connectOpen, setConnectOpen] = useState(false);
@@ -108,56 +109,62 @@ export default function Shell() {
     }
   }
 
-  // 1-minute scripted demo: plays pre-rendered voices and moves between screens.
+  // 1-minute scripted demo: a conversation with HerHeart on the Talk screen.
+  // One shared audio player, so two voices can never play at once; pressing
+  // Demo again stops it.
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  function player() {
+    if (!demoAudio.current) demoAudio.current = new Audio();
+    return demoAudio.current;
+  }
   function stopDemo() {
     demoRun.current++;
-    demoAudio.current?.pause();
-    demoAudio.current = null;
+    const a = demoAudio.current;
+    if (a) {
+      a.pause();
+      a.onended = null;
+      a.onerror = null;
+    }
     setDemoLine(null);
+    setDemoOn(false);
     setDay(LAST_DAY);
   }
   async function playDemo() {
+    if (demoOn) return stopDemo();
     if (live) voice.endSession();
-    const run = ++demoRun.current;
+    stopDemo();
+    const run = demoRun.current;
+    setDemoOn(true);
     const alive = () => demoRun.current === run;
     setDay(DEMO_DAY);
     setConnectOpen(false);
+    setTab("talk");
+    setLog([]);
+    await sleep(500);
     for (const line of DEMO) {
       if (!alive()) return;
-      if (line.scene === "connect") {
-        setTab("home");
-        setConnectOpen(true);
-      } else if (line.scene === "home-bp") {
-        setConnectOpen(false);
-        setMetric("bp");
-        setTab("home");
-        // Bring the blood-pressure chart into view above the caption.
-        setTimeout(() => document.getElementById("trends")?.scrollIntoView({ behavior: "smooth", block: "start" }), 450);
-      } else {
-        setConnectOpen(false);
-        setTab(line.scene);
-      }
       setDemoLine(line);
-      const a = new Audio(`/demo/${line.id}.mp3`);
+      setLog((l) => [...l, { who: line.who, text: captionText(line.text), card: line.card }]);
+      const a = player();
+      a.pause();
+      a.src = `/demo/${line.id}.mp3`;
       a.playbackRate = DEMO_VOICES[line.who].rate;
-      demoAudio.current = a;
       await new Promise<void>((resolve) => {
         a.onended = () => resolve();
         a.onerror = () => resolve();
         a.play().catch(() => resolve());
       });
+      if (!alive()) return;
+      setDemoLine(null);
       await sleep(PAUSE_MS);
     }
-    if (!alive()) return;
-    await sleep(1200);
     if (alive()) stopDemo();
   }
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement)?.tagName === "INPUT" || (e.target as HTMLElement)?.tagName === "TEXTAREA") return;
-      if (e.key.toLowerCase() === "d") (demoLine ? stopDemo() : playDemo());
-      if (e.key === "Escape" && demoLine) stopDemo();
+      if (e.key.toLowerCase() === "d") (demoOn ? stopDemo() : playDemo());
+      if (e.key === "Escape" && demoOn) stopDemo();
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
@@ -169,7 +176,7 @@ export default function Shell() {
       : "listening"
     : voice.isSpeaking ? "speaking" : live ? "listening" : voice.status === "connecting" ? "connecting" : "idle";
   const level = () => {
-    if (demoAudio.current && !demoAudio.current.paused) return 0.3 + 0.35 * Math.abs(Math.sin(performance.now() / 120));
+    if (demoLine && demoAudio.current && !demoAudio.current.paused) return 0.3 + 0.35 * Math.abs(Math.sin(performance.now() / 120));
     if (voice.status !== "connected") return 0;
     try {
       return voice.isSpeaking ? voice.getOutputVolume() * 1.6 : voice.getInputVolume() * 2.2;
@@ -187,8 +194,8 @@ export default function Shell() {
           {live ? (
             <span className={s.liveDot}>● Voice on</span>
           ) : (
-            <button type="button" className={s.demoBtn} onClick={() => (demoLine ? stopDemo() : playDemo())} aria-hidden={false}>
-              {demoLine ? "■ Stop" : "▶ Demo"}
+            <button type="button" className={s.demoBtn} onClick={() => (demoOn ? stopDemo() : playDemo())}>
+              {demoOn ? "■ Stop" : "▶ Demo"}
             </button>
           )}
         </div>
@@ -218,13 +225,6 @@ export default function Shell() {
           {tab === "community" && <Community />}
           {tab === "challenges" && <Challenges />}
         </div>
-
-        {demoLine && (
-          <div className={`${s.caption} ${demoLine.who === "hera" ? s.capHera : s.capYou}`} role="status" aria-live="polite">
-            <span className={s.capWho}>{demoLine.who === "hera" ? "HerHeart" : profile.name}</span>
-            <p>{captionText(demoLine.text)}</p>
-          </div>
-        )}
 
         <nav className={s.nav} aria-label="HerHeart">
           {TABS.map((t) => (

@@ -20,3 +20,10 @@
 .type button { padding: 8px 14px; }
 .type button:disabled, .type input:disabled { opacity: 0.45; cursor: not-allowed; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+/* Once the conversation starts, the heart shrinks so the chat has room. */
+.chatting .stage { padding-top: 6px; position: sticky; top: 0; z-index: 2; background: var(--bg); padding-bottom: 6px; }
+.chatting .stage :global(.heart-svg) { width: 92px; }
+.chatting .stage :global(.heart-avatar) { padding-top: 8px; }
+.log li { animation: msgIn 0.25s ease-out; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .log li { animation: none; } }

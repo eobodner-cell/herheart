@@ -49,13 +49,13 @@ Demo posts, members and challenges are labelled "demo". New posts, medications, 
 
 ## 1-minute demo
 
-Press **▶ Demo** in the phone's status bar (or the `D` key; `Esc` stops it). It plays a scripted conversation (about 51 seconds) with pre-rendered ElevenLabs voices, while the app moves between its screens:
+Press **▶ Demo** in the phone's status bar (or the `D` key; `Esc` stops it). It plays a scripted conversation (about 51 seconds) on the **Talk** screen with pre-rendered ElevenLabs voices. The heart glows when it speaks, and other features appear as cards inside HerHeart's replies:
 
-1. **Talk:** Amara: *"I've been taking ramipril for a week now. Has it been changing my blood pressure?"*
-2. **Connected apps:** HerHeart: *"Let me check. Your Withings cuff, Apple Watch and GP record are all synced."*
-3. **Home, blood-pressure chart:** *"It has, a little. 140 over 87 the week before, 137 this week. The full effect usually takes two to four weeks."* Then she asks if that's normal, and HerHeart explains it compares her with her own normal of 125/79.
-4. **Meds:** *"My GP also mentioned a statin."* / *"Add it here, and I'll track how both work for you."*
-5. **Community → Challenges:** *"Is anyone else going through this?"* / *"Over three thousand women in Living with hypertension. And your team is on day nine of the saturated-fat challenge."*
+1. Amara: *"I've been taking ramipril for a week now. Has it been changing my blood pressure?"*
+2. *(connected apps card)* HerHeart: *"Let me check. Your Withings cuff, Apple Watch and GP record are all synced."*
+3. *(blood-pressure card)* *"It has, a little. 140 over 87 the week before, 137 this week. The full effect usually takes two to four weeks."* Then she asks if that's normal, and HerHeart explains it compares her with her own normal of 125/79.
+4. *(medications card)* *"My GP also mentioned a statin."* / *"Add it here, and I'll track how both work for you."*
+5. *(community and challenge card)* *"Is anyone else going through this?"* / *"Over three thousand women in Living with hypertension. And your team is on day nine of the saturated-fat challenge."*
 
 During the demo the app shows 18 Sep 2026, one week after she started ramipril; it returns to "today" afterwards. Script: `src/lib/demo.ts`. After editing a line, run `npm run demo:audio` (re-renders only changed lines).
 
