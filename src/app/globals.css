@@ -1,0 +1,105 @@
+/* HerHeart design tokens. Minimal: warm off-white ground, white cards with a
+   soft shadow instead of borders, one rose accent, semantic green/amber. */
+:root {
+  --bg: #f7f4f5;
+  --card: #ffffff;
+  --ink: #1c1418;
+  --muted: #8a7e84;
+  --line: #efe7ea;
+  --rose: #e0245e;
+  --rose-soft: #fdeef3;
+  --violet: #8b5cf6;
+  --good: #1f9d6b;
+  --good-soft: #e7f6ef;
+  --watch: #c27512;
+  --watch-soft: #fdf3e2;
+  --shadow: 0 1px 2px rgba(28, 20, 24, 0.04), 0 6px 18px rgba(28, 20, 24, 0.05);
+  --radius: 20px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Inter, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button {
+  cursor: pointer;
+  border: 0;
+  background: var(--rose-soft);
+  color: var(--rose);
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+button:hover { filter: brightness(0.97); }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
+button.primary { background: var(--rose); color: #fff; }
+a { color: var(--rose); }
+
+/* Heart avatar */
+.heart-avatar {
+  --level: 0;
+  --glow: 0.25;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  padding: 18px 12px 6px;
+  cursor: pointer;
+  color: var(--ink);
+  font: inherit;
+  justify-self: center;
+}
+.heart-avatar:hover { border: 0; }
+.heart-avatar:focus-visible { outline: 2px solid var(--rose); outline-offset: 4px; border-radius: 16px; }
+.heart-svg {
+  width: 132px;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 calc(6px + var(--glow) * 22px + var(--level) * 40px) rgba(244, 63, 107, calc(0.35 + var(--glow) * 0.4 + var(--level) * 0.6)));
+  transform: scale(calc(1 + var(--level) * 0.12));
+  transition: filter 0.25s;
+}
+.heart-body { transform-origin: 60px 55px; animation: beat 1.6s ease-in-out infinite; }
+@keyframes beat {
+  0%, 40%, 100% { transform: scale(1); }
+  12% { transform: scale(1.06); }
+  24% { transform: scale(0.98); }
+  32% { transform: scale(1.04); }
+}
+.heart-eyes { transform-origin: 60px 46px; animation: blink 4.5s infinite; }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+.heart-mouth { opacity: 0; transform-origin: 60px 65px; transform: scaleY(calc(0.3 + var(--level) * 1.6)); }
+.heart-halo {
+  position: absolute;
+  top: 18px;
+  width: 150px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px solid rgba(244, 63, 107, 0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+.heart-label { font-size: 13px; font-weight: 600; color: var(--muted); }
+
+.heart-avatar.idle .heart-label { color: var(--rose); }
+.heart-avatar.connecting .heart-halo { animation: ring 1.2s ease-out infinite; }
+.heart-avatar.connecting .heart-body { animation-duration: 0.9s; }
+@keyframes ring { from { transform: scale(0.8); opacity: 0.8; } to { transform: scale(1.35); opacity: 0; } }
+.heart-avatar.listening { --glow: 0.6; }
+.heart-avatar.listening .heart-label { color: var(--good); }
+.heart-avatar.speaking { --glow: 1; }
+.heart-avatar.speaking .heart-smile { opacity: 0; }
+.heart-avatar.speaking .heart-mouth { opacity: 1; }
+.heart-avatar.speaking .heart-body { animation-duration: 1.1s; }
+.heart-avatar.speaking .heart-label { color: var(--rose); }
+
+@media (prefers-reduced-motion: reduce) {
+  .heart-body, .heart-eyes, .heart-halo { animation: none !important; }
+  .heart-svg { transform: none; }
+}

@@ -1,0 +1,626 @@
+/* Challenges screen. Minimal: white cards with soft shadow, no borders,
+   one rose accent. Colours from globals.css tokens only. */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 18px 32px;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.screen *,
+.screen *::before,
+.screen *::after {
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px;
+}
+
+.label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.labelPad {
+  padding: 0 4px;
+}
+
+.labelAside {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.note {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.demo {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  opacity: 0.75;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.card,
+.hero,
+.listCard {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.card {
+  padding: 18px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- Hero ---- */
+.hero {
+  padding: 18px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.heroMain {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.ring {
+  position: relative;
+  flex-shrink: 0;
+  width: 104px;
+  height: 104px;
+}
+
+.ring svg {
+  display: block;
+}
+
+.ringTrack {
+  fill: none;
+  stroke: var(--rose-soft);
+  stroke-width: 10;
+}
+
+.ringFill {
+  fill: none;
+  stroke: var(--rose);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.ringText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringValue {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.ringLabel {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.heroText {
+  flex: 1;
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0 0 2px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--rose);
+}
+
+.heroTitle {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.heroSub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.stat + .stat {
+  border-left: 1px solid var(--line);
+}
+
+.statValue {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.toggle {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--rose);
+  font-size: 14px;
+}
+
+.chev {
+  transition: transform 0.2s;
+}
+
+.chevOpen {
+  transform: rotate(90deg);
+}
+
+/* Members */
+.members {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.avatarMe {
+  background: var(--rose);
+  color: var(--card);
+}
+
+.memberMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.memberName {
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.memberPct {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--rose) 45%, var(--card));
+}
+
+.barMe {
+  background: var(--rose);
+}
+
+/* ---- 30-day dots ---- */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  row-gap: 12px;
+  justify-items: center;
+}
+
+.cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.dotHit {
+  background: var(--rose);
+}
+
+.dotMissed {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--muted);
+}
+
+.dotUpcoming {
+  background: var(--line);
+}
+
+.dotToday {
+  outline: 2px solid var(--rose-soft);
+  outline-offset: 2px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend .dot {
+  width: 10px;
+  height: 10px;
+}
+
+.source {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---- Badges ---- */
+.badges {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.badgeIcon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 2px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.badgeEarned .badgeIcon {
+  background: var(--rose);
+  color: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.badgeLocked .badgeIcon {
+  background: var(--line);
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.badgeName {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.badgeLocked .badgeName {
+  color: var(--muted);
+}
+
+.badgeNote {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+/* ---- Grouped list card ---- */
+.listCard {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+}
+
+.listCard > li + li {
+  border-top: 1px solid var(--line);
+}
+
+/* Leaderboard */
+.boardRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  border-radius: 14px;
+}
+
+.boardMine {
+  background: var(--rose-soft);
+}
+
+.listCard > li.boardMine,
+.listCard > li.boardMine + li {
+  border-top-color: transparent;
+}
+
+.rank {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.boardMine .rank {
+  color: var(--rose);
+}
+
+.boardTeam {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.boardMine .boardTeam {
+  font-weight: 700;
+}
+
+.youTag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+}
+
+.boardPct {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Challenge rows */
+.rowWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.rowMeta {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.pill,
+.pillMuted {
+  flex-shrink: 0;
+  min-width: 72px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pill {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+.pillMuted {
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.quiet {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 10px 14px;
+}
+
+.choiceBlurb {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.choiceBtns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.choiceBtn,
+.choiceBtnPrimary {
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.choiceBtn {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+.choiceBtnPrimary {
+  background: var(--rose);
+  color: var(--card);
+}

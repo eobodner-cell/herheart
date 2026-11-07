@@ -1,0 +1,22 @@
+.talk { display: grid; grid-template-rows: auto 1fr auto; gap: 16px; min-height: 100%; padding: 8px 18px 16px; }
+.stage { display: grid; justify-items: center; gap: 4px; padding-top: 28px; }
+.stage :global(.heart-svg) { width: 176px; }
+.stage :global(.heart-label) { font-size: 15px; font-weight: 600; }
+.error { margin: 0; font-size: 12px; color: var(--watch); background: var(--watch-soft); padding: 6px 12px; border-radius: 999px; text-align: center; }
+
+.ideas { display: grid; gap: 10px; align-content: start; justify-items: center; text-align: center; }
+.ideas h2 { margin: 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.ideas p { display: none; }
+.ideas ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ideas li { font-size: 13px; background: var(--card); box-shadow: var(--shadow); color: var(--ink); padding: 8px 12px; border-radius: 999px; }
+
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; align-content: start; overflow-y: auto; }
+.log li { max-width: 82%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; }
+.hera { background: var(--card); box-shadow: var(--shadow); justify-self: start; border-bottom-left-radius: 6px; }
+.you { background: var(--rose); color: #fff; justify-self: end; border-bottom-right-radius: 6px; }
+
+.type { display: flex; gap: 8px; align-items: center; background: var(--card); box-shadow: var(--shadow); border-radius: 999px; padding: 5px 5px 5px 16px; }
+.type input { flex: 1; min-width: 0; border: 0; background: none; padding: 8px 0; outline: none; font-size: 15px; }
+.type button { padding: 8px 14px; }
+.type button:disabled, .type input:disabled { opacity: 0.45; cursor: not-allowed; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
